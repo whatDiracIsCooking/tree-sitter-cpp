@@ -213,3 +213,87 @@ char const* french() { return "Salut!"; }
             (return_statement
               (string_literal
                 (string_content)))))))))
+
+================================================================================
+Error Recovery: Module Declaration Missing Semicolon
+================================================================================
+
+export module foo
+
+--------------------------------------------------------------------------------
+
+(translation_unit
+  (module_declaration
+    (module_name
+      (identifier))))
+
+================================================================================
+Error Recovery: Malformed Import Statement
+================================================================================
+
+import;
+
+--------------------------------------------------------------------------------
+
+(translation_unit
+  (import_declaration))
+
+================================================================================
+Error Recovery: Missing Module Name
+================================================================================
+
+export module ;
+
+--------------------------------------------------------------------------------
+
+(translation_unit
+  (export_declaration
+    (ERROR)
+    (expression_statement)))
+
+================================================================================
+Error Recovery: Invalid Partition Syntax
+================================================================================
+
+export module :partition;
+
+--------------------------------------------------------------------------------
+
+(translation_unit
+  (module_declaration
+    (ERROR)
+    (module_name
+      (identifier))))
+
+================================================================================
+Error Recovery: Module in Wrong Location
+================================================================================
+
+namespace ns {
+  module foo;
+}
+
+--------------------------------------------------------------------------------
+
+(translation_unit
+  (namespace_definition
+    (namespace_identifier)
+    (declaration_list
+      (declaration
+        (type_identifier)
+        (identifier)))))
+
+================================================================================
+Error Recovery: Duplicate Module Keywords
+================================================================================
+
+module module foo;
+
+--------------------------------------------------------------------------------
+
+(translation_unit
+  (module_declaration
+    (module_name
+      (identifier)))
+  (expression_statement
+    (identifier)))

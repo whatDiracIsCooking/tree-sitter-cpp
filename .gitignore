@@ -38,3 +38,8 @@ dist/
 *.tar.gz
 *.tgz
 *.zip
+
+# Claude Code configuration
+.claude/
+.mcp.json
+.serena/

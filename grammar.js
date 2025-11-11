@@ -362,14 +362,17 @@ module.exports = grammar(C, {
       $.module_name,
     ),
 
-    module_declaration: $ => seq(
+    // C++20 module declarations support multiple attribute sequences
+    // Example: export module foo [[attr1]] [[attr2]];
+    // Using `repeat` instead of `optional` to allow multiple [[...]] attributes
+    module_declaration: $ => prec.right(seq(
       optional('export'),
       'module',
       field('name', $.module_name),
       field('partition', optional($.module_partition)),
-      optional($.attribute_declaration),
-      ';',
-    ),
+      repeat($.attribute_declaration),
+      optional(';'),
+    )),
 
     export_declaration: $ => seq(
       'export',
@@ -379,20 +382,43 @@ module.exports = grammar(C, {
     import_declaration: $ => seq(
       optional('export'),
       'import',
-      choice(
+      optional(choice(
         field('name', $.module_name),
         field('partition', $.module_partition),
         field('header', choice(
           $.string_literal,
           $.system_lib_string,
         )),
-      ),
+      )),
       optional($.attribute_declaration),
       ';',
     ),
 
-    global_module_fragment_declaration: _ => seq('module', ';'),
+    global_module_fragment_declaration: _ => prec(1, seq('module', ';')),
     private_module_fragment_declaration: _ => seq('module', ':', 'private', ';'),
+
+    // Override C grammar to allow export declarations in linkage specifications
+    // C++20 allows module export declarations inside extern "C"/"C++" blocks
+    // Example: extern "C" { export int func(); }
+    // The C grammar doesn't support this since C doesn't have modules
+    linkage_specification: ($, original) => seq(
+      'extern',
+      field('value', $.string_literal),
+      field('body', choice(
+        $.function_definition,
+        $.declaration,
+        alias($._linkage_declaration_list, $.declaration_list),
+      )),
+    ),
+
+    _linkage_declaration_list: $ => seq(
+      '{',
+      repeat(choice(
+        $._block_item,
+        $.export_declaration,
+      )),
+      '}',
+    ),
 
     template_declaration: $ => seq(
       'template',

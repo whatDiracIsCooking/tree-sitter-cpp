@@ -3329,8 +3329,13 @@
                 "name": "declaration"
               },
               {
-                "type": "SYMBOL",
-                "name": "declaration_list"
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_linkage_declaration_list"
+                },
+                "named": true,
+                "value": "declaration_list"
               }
             ]
           }
@@ -11868,65 +11873,72 @@
       ]
     },
     "module_declaration": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "export"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "STRING",
-          "value": "module"
-        },
-        {
-          "type": "FIELD",
-          "name": "name",
-          "content": {
-            "type": "SYMBOL",
-            "name": "module_name"
-          }
-        },
-        {
-          "type": "FIELD",
-          "name": "partition",
-          "content": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
             "type": "CHOICE",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "module_partition"
+                "type": "STRING",
+                "value": "export"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "STRING",
+            "value": "module"
+          },
+          {
+            "type": "FIELD",
+            "name": "name",
+            "content": {
+              "type": "SYMBOL",
+              "name": "module_name"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "partition",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "module_partition"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "attribute_declaration"
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ";"
               },
               {
                 "type": "BLANK"
               }
             ]
           }
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "attribute_declaration"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "STRING",
-          "value": ";"
-        }
-      ]
+        ]
+      }
     },
     "export_declaration": {
       "type": "SEQ",
@@ -11989,37 +12001,45 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "FIELD",
-              "name": "name",
-              "content": {
-                "type": "SYMBOL",
-                "name": "module_name"
-              }
-            },
-            {
-              "type": "FIELD",
-              "name": "partition",
-              "content": {
-                "type": "SYMBOL",
-                "name": "module_partition"
-              }
-            },
-            {
-              "type": "FIELD",
-              "name": "header",
-              "content": {
-                "type": "CHOICE",
-                "members": [
-                  {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "FIELD",
+                  "name": "name",
+                  "content": {
                     "type": "SYMBOL",
-                    "name": "string_literal"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "system_lib_string"
+                    "name": "module_name"
                   }
-                ]
-              }
+                },
+                {
+                  "type": "FIELD",
+                  "name": "partition",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "module_partition"
+                  }
+                },
+                {
+                  "type": "FIELD",
+                  "name": "header",
+                  "content": {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "string_literal"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "system_lib_string"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
             }
           ]
         },
@@ -12042,17 +12062,21 @@
       ]
     },
     "global_module_fragment_declaration": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "module"
-        },
-        {
-          "type": "STRING",
-          "value": ";"
-        }
-      ]
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "module"
+          },
+          {
+            "type": "STRING",
+            "value": ";"
+          }
+        ]
+      }
     },
     "private_module_fragment_declaration": {
       "type": "SEQ",
@@ -12072,6 +12096,35 @@
         {
           "type": "STRING",
           "value": ";"
+        }
+      ]
+    },
+    "_linkage_declaration_list": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_block_item"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "export_declaration"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
         }
       ]
     },

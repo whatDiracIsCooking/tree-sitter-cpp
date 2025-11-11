@@ -2234,6 +2234,10 @@
           "named": true
         },
         {
+          "type": "export_declaration",
+          "named": true
+        },
+        {
           "type": "function_definition",
           "named": true
         },
@@ -4383,7 +4387,7 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": false,
       "types": [
         {
